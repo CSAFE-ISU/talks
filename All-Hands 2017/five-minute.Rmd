@@ -58,7 +58,12 @@ plot_3d_land(path = "/Users/heike/papers/dissertations/eric-dissertation/images/
 
 <img src="images/background-logo-2.png" class="cover" width=1200 height=800>
 
-- Matching is based on features extracted from aligned land-to-land comparison: ccf [@vorburger:2011], total variation [@clarkson1933definitions], number striae, cms [@biasotti:1959], number non-alignments, ...
+- Matching is based on features extracted from aligned land-to-land comparison: 
+ccf [@vorburger:2011], 
+total variation [@clarkson1933definitions], 
+number striae, 
+cms [@biasotti:1959], 
+number non-alignments, ... 
 - Used Random Forest [@Breiman:2001], but  other machine learning algorithms show similar performance; features are much more important than the algorithm
 
 ## Reference database
@@ -77,7 +82,7 @@ plot_3d_land(path = "/Users/heike/papers/dissertations/eric-dissertation/images/
 
 <img src="images/density-overview-1.png" width="750">
 
-
+<!--
 ## Data-driven rules
 
 <img src="images/background-logo-2.png" class="cover" width=1200 height=800>
@@ -87,7 +92,7 @@ plot_3d_land(path = "/Users/heike/papers/dissertations/eric-dissertation/images/
 - in this tree: 1 false positive, 40 false negatives (for pairs of lands)
 
 <img src="images/one-tree.jpg" width="750">
-
+-->
 
 ## Algorithm: Forest of 1000 trees
 
@@ -118,15 +123,28 @@ https://isu-csafe.stat.iastate.edu/shiny/bulletr/
 - Phoenix PD: 8 barrels (with 2 test firings), 2 unknowns
 - 3d imaging by Sensofar (thanks, Bill!)
 - Scans by different operator, on different microscope, different staging of the bullets, different resolution
-- Results are !!!promising!!!
+- Results are *promising*
 </p>
 </div>
 
-# Future Work
+## Testing the Model (cont'd)
 
-## Reference Database {.small}
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
 
-biggest limitation thus far is limited amount of available 3D scan data for bullets:
+<div class="double">
+<p class="double-flow">
+How much land do we need for a match?
+
+<img src="images/senspe-1.png" class="one-col-image"><br>
+</p><p class="double-flow">
+- error rates seem stable down to about 50% of a land
+- middle of the land seems slightly better (not significant)
+</p>
+</div>
+
+## Limitations {.small}
+
+biggest limitation thus far is limited number of available 3D scan data for bullets:
 
 in NIST ballistics database (Xiaoyu Alan Zhang, https://tsapps.nist.gov/NRBTD):
 
@@ -140,11 +158,21 @@ in NIST ballistics database (Xiaoyu Alan Zhang, https://tsapps.nist.gov/NRBTD):
 
 please contribute your experimental data!
 
-## Transparency
+## Transparency & Reproducibility
 
-- *Open Data*: NIST ballistics database, locally we are in the process of (re-)scanning Hamby-44 and Hamby-259
-- *Open Algorithms*: `bulletr` is R package on CRAN with functionality for read/write x3p format, feature extraction and matching algorithms
+- *Open Data*: [NIST ballistics database](https://tsapps.nist.gov/NRBTD), locally we are in the process of (re-) scanning Hamby-44 and Hamby-259
+- *Open Algorithms*: `bulletr` is R package on CRAN with functionality for read/write x3p format, feature extraction and matching algorithms, [devel version on github](http://github.com/erichare/bulletr)
 - *Open Results*: local database with processed land scans; actual future work: submit scores for land-to-land comparisons from different approaches/institutions/labs to database
+
+## Future work
+
+1. improve matching:
+    * importance of parameter choices
+    * expand on features, e.g. adapt toolmark scores to bullet lands
+    * profile extraction (groove detection, area of extraction)
+1. investigate sources of (statistical) error: how much variability is introduced due to operator, lab, type of microscope? (ties into efforts by Martin Baiker from NFI and NIST)
+1. expand on applications: e.g. primer shearing marks? 
+<!-- Primer shearing marks:	Striated toolmarks caused by the rough margins of a firing pin hole (aperture) scraping the primer metal during unlocking of the breech of a firearm -->
 
 
 ## Thank You
@@ -154,7 +182,7 @@ please contribute your experimental data!
 Special thanks to Alan Zheng at the National Institute of Standards and Technology for maintaining the NIST Ballistics Toolmark Research Database and providing many useful suggestions.
 
 
-## References
+## References {.small}
 
 <!--
 ## Feature Expression
