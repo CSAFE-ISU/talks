@@ -196,7 +196,7 @@ Features are extracted from aligned signaturs $f$ and $g$:
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 <img src="images/density-overview-1.png" width="750">
-<!--
+
 ## Data-driven rules
 
 <img src="images/background-logo-2.png" class="cover" width=1200 height=800>
@@ -206,7 +206,7 @@ Features are extracted from aligned signaturs $f$ and $g$:
 - in this tree: 1 false positive, 40 false negatives (for pairs of lands)
 
 <img src="images/one-tree.jpg" width="750">
--->
+
 
 ## Algorithm: Forest of 1000 trees
 

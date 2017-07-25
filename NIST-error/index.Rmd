@@ -1,0 +1,611 @@
+---
+title: "Sources of Variability in Surface Measurements"
+subtitle: "NIST workshop on Error Management"
+author: "Heike Hofmann (heike.hofmann@gmail.com, @heike_hh) <br> Alicia Carriquiry"
+date: " July 2017"
+output:
+  xaringan::moon_reader:
+    css: ["default", "myremark.css"]
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  error = FALSE, 
+  collapse = TRUE,
+  comment = "",
+  fig.height = 6,
+  fig.width = 6,
+  fig.align = "center",
+  cache = FALSE,
+  fig.path='figures/',
+  echo=FALSE
+)
+
+library(tidyverse)
+library(scales)
+library(multidplyr)
+library(bulletr)
+```
+
+```{r functions, echo=FALSE, warning = FALSE}
+dplccf <- function(x, y, lag.max = 50) {
+  x <- as.vector(unlist(x))
+  y <- as.vector(unlist(y))
+  cors1 <- sapply(1:lag.max, function(lag) {
+    cor(x, lead(y,lag), use="pairwise.complete")
+  }) 
+  cors2 <- sapply(1:lag.max, function(lag) {
+    cor(x, lag(y,lag), use="pairwise.complete")
+  }) 
+  list(
+    acf = c(rev(cors1), cor(x, y, use="pairwise.complete"), cors2),
+    lag = -lag.max:lag.max)
+}
+
+getlag <- function(data, target=1, vars = 2:ncol(data)) {
+
+  lags <- sapply(vars , function(k) {
+    cc <- dplccf(data[,target], data[,k], lag.max=200)
+    cc$lag[which.max(cc$acf)]
+  })
+
+  data.frame(land= names(data)[c(target, vars)], lag=c(0,lags))
+}
+
+```
+
+
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Outline
+
+
+- Study setup 
+- Similarity measures
+- Sources of variability
+- Other measures of similarity
+
+
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Study Setup
+
+* Goal: quantify sources of variability of surface measurements
+* Here: focus on bullet lands
+* Study setup: 
+  * two operators (A, F)
+  * scanning three bullet lands (`land`)
+  * from two different bullets (`bullet`)
+  * on two separate days (`round`)
+  * using three immediate acquisitions (`scan`) for each land
+* Sources of variability: machine, staging, bullet and lands, operator
+* Scans taken with Sensofar CLM microscope at Iowa State
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Why measure variability?
+
+- Ideally, we would like to measure *error* - but we don't know ground truth 
+- Measuring sources of variability will/should inform 
+  - standard operating protocol, 
+  - results from machine calibration and 
+  - same-source analysis
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Measuring similarity
+
+* often, (cross) correlation is used ... 
+* here: one operator, one land - all cross-correlations should be high
+
+```{r baseline, echo = FALSE, message = FALSE, fig.height = 5}
+proc_all <- read.csv("../data/processed.csv")
+proc_all$barrelland <- as.character(proc_all$land)
+proc_all <- proc_all %>% mutate(
+  barrelland = replace(barrelland, bullet=="Bullet 2" & land == "Land 1", "Land 6"),
+  barrelland = replace(barrelland, bullet=="Bullet 2" & land == "Land 2", "Land 1"),
+  barrelland = replace(barrelland, bullet=="Bullet 2" & land == "Land 3", "Land 2"))
+
+
+proc_all <- proc_all %>% mutate(x = round(x, 3))
+
+res <- proc_all %>% filter(barrelland=="Land 2") %>%
+  filter(!(bullet == "Bullet 1" & round == "Round 2"))
+
+raw_wide <- res %>% unite(design, bullet, round, scan, sep="-") %>%
+  dplyr::select(x, y, design, value) %>% spread(design, value)
+
+
+library(RColorBrewer)
+oranges <- brewer_pal(palette="Oranges")(5)
+
+cors <- cor(raw_wide[,-(1:2)], use="pairwise.complete")
+#dimnames(cors) <- NULL
+#round(100*cors,2)
+df_cors <- as.data.frame(cors)
+df_cors$rows <- row.names(cors)
+df_cors <- df_cors %>% gather(cols, cors, -rows)
+df_cors %>% mutate(
+  cor_cut = cut(cors, breaks=c(0,.25,.5,.75, .95, 1)),
+  rows = forcats::fct_rev(factor(rows))
+) %>%
+  ggplot(aes(x = cols, y=rows, fill=cor_cut)) +
+  geom_tile() +
+  theme(axis.text.x = element_text(angle=45, hjust=0, vjust = 0.5)) + 
+  coord_equal() +
+  scale_fill_manual("Correlation\nIntervals", values=oranges[4:5]) +
+  xlab("") + ylab("") +
+  ggtitle("Correlation of (raw) surface measurements for land 2") +
+  scale_x_discrete(position = "top")
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Measuring similarity (cont'd)
+
+* here: one operator, different lands - cross-correlations are still relatively high
+
+```{r, fig.height = 5}
+res <- proc_all %>% filter(bullet=="Bullet 2") 
+
+raw_wide <- res %>% unite(design, land, round, scan, sep="-") %>%
+  dplyr::select(x, y, design, value) %>% spread(design, value)
+
+cors <- cor(raw_wide[,-(1:2)], use="pairwise.complete")
+#dimnames(cors) <- NULL
+#round(100*cors,2)
+df_cors <- as.data.frame(cors)
+df_cors$rows <- row.names(cors)
+df_cors <- df_cors %>% gather(cols, cors, -rows)
+df_cors <- df_cors %>% mutate(
+  cor_cut = cut(cors, breaks=c(0,.25, .5, .75, .95, 1)),
+  rows = forcats::fct_rev(factor(rows))
+) 
+df_cors <- df_cors %>% separate(rows, into=c("rland", "rround", "rscan"), sep="-") %>% 
+  separate(cols, into=c("cland", "cround", "cscan"), sep="-") %>% 
+  unite(rows, rround, rscan, sep="-") %>%
+  unite(cols, cround, cscan, sep="-") 
+df_cors %>%
+  ggplot(aes(x = cols, y=rows, fill=cor_cut)) +
+  geom_tile() +
+  theme(axis.text.x = element_text(angle=45, hjust=0, vjust = 0.5)) + 
+  coord_equal() +
+  scale_fill_manual("Correlation\nIntervals", values=oranges[-1]) +
+  xlab("") + ylab("") +
+  ggtitle("Correlation of (raw) surface measurements for bullet 2") +
+  scale_x_discrete(position = "top") + 
+  facet_grid(cland~rland)
+```
+
+
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Raw surface values
+
+- (cross)-correlation captures 'bullet-shape' rather than similarity of lands
+- But: similarity measure should reflect study setup 
+
+```{r, echo=FALSE, fig.width=10}
+proc_all %>% 
+  filter(!(bullet == "Bullet 1" & round =="Round 2")) %>% 
+  mutate(
+    round = replace(round, round == "Round 3", "Round 2")
+    ) %>%
+  ggplot(aes(x = y, y = value)) + 
+  geom_point(size = .1, aes(colour=scan, shape = round)) +
+  facet_wrap(~bullet+barrelland) +
+  guides(colour = guide_legend(override.aes = list(size = 2)),
+         shape = guide_legend(override.aes = list(size = 2))) +
+  scale_colour_brewer(palette="Set2") +
+  ylab("Surface measurement (in micron)") +
+  xlab("(Relative) Location (in micron)") +
+  theme_bw()
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Aligned signatures
+
+```{r, echo=FALSE, fig.width=10}
+proc_all_nest <- proc_all %>% group_by(barrelland) %>% nest()
+
+proc_all_nest <- proc_all_nest %>% mutate(
+  flats = data %>% purrr::map(.f = function(x) {
+    flats <-  x %>% unite(design, bullet, round, scan, sep="-") %>%
+                dplyr::select(y, design, resid) %>% spread(design, resid)
+    lag_df <- getlag(flats, 2, 3:ncol(flats))
+    flats_long <- flats %>% gather(key=files, flat, -1 )
+    flats_long <- flats_long %>% left_join(lag_df, by=c("files"="land"))
+    flats <- flats_long %>%
+      separate(files, into=c("bullet", "round", "scan"), sep= "-",
+           remove = FALSE) 
+    flats <- flats %>% #filter(flat < 5) %>%
+      mutate(x = round((y+.645*lag)/.645)) %>%
+      group_by(x) %>% 
+      mutate(resid = flat-mean(flat, na.rm=TRUE))
+    flats
+  })
+)
+res_all <- proc_all_nest %>% unnest(flats)
+
+res_all %>% 
+  ggplot(aes( x = x, y = flat, colour = scan, shape = round)) + 
+  geom_point(size = 0.1) + facet_wrap(~bullet+barrelland) + 
+  xlab("Relative Location (in microns)") +
+  ylab("Signature (in microns)") +
+  ggtitle("Aligned Signatures") +
+    guides(colour = guide_legend(override.aes = list(size = 2)),
+         shape = guide_legend(override.aes = list(size = 2))) +
+  scale_color_brewer(palette="Set2") +
+  theme_bw()
+
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Comparison of aligned signatures
+
+```{r, echo=FALSE}
+flat_wide <- res_all %>% filter(barrelland == "Land 1") %>% 
+  filter(!(bullet == "Bullet 1" & round == "Round 2")) %>%
+  dplyr::select(x, flat, files) %>% spread(files, flat)
+```
+
+```{r, echo=FALSE, fig.width=7, fig.height = 7}
+pairs(flat_wide[,-1])
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Comparison of aligned signatures
+
+* Correlation drops (b/c main structure is removed)
+* ... but now reflects study structure
+
+```{r, echo=FALSE}
+cors <- cor(flat_wide[,-1], use="pairwise.complete")
+#dimnames(cors) <- NULL
+#round(100*cors,2)
+df_cors <- as.data.frame(cors)
+df_cors$rows <- row.names(cors)
+df_cors <- df_cors %>% gather(cols, cors, -rows)
+df_cors %>% mutate(
+  cor_cut = cut(cors, breaks=c(0,.5,.8, .85, .97, 1)),
+  rows = forcats::fct_rev(factor(rows))
+) %>%
+  ggplot(aes(x = cols, y=rows, fill=cor_cut)) +
+  geom_tile() +
+  theme(axis.text.x = element_text(angle=45, vjust = 0.5, hjust=0)) + 
+  coord_equal() +
+  scale_fill_manual("Correlation\nIntervals", values=oranges[-(1:2)]) +
+  xlab("") + ylab("") +
+  scale_x_discrete(position = "top") +
+  ggtitle("Correlation matrix of processed\nand aligned signatures for Land 2")
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Sources of variability
+
+.pull-left[
+
+- measurements from different bullets (color) show large differences, 
+- the two lands seem to exhibit similar variability,
+- scan repeats are typically very close
+]
+
+.pull-right[
+```{r}
+dframe <- res_all %>% 
+  filter(!(bullet == "Bullet 1" & round == "Round 2")) %>%
+  filter(barrelland %in% c("Land 1", "Land 2")) %>%
+  mutate(
+    round = replace(round, round=="Round 3", "Round 2")
+  ) %>% group_by(x) %>% mutate(resid = flat-mean(flat, na.rm=TRUE))
+
+dframe %>% 
+  filter(x %in% (900+50*(0:10))) %>%
+  ggplot(aes(x = x, y = resid, colour = bullet, shape=round)) +
+  geom_hline(yintercept = 0, colour="grey80", size= 0.5) +
+  geom_point(size=3) + facet_grid(.~barrelland) + ylim(c(-2,2)) +
+  theme_bw() + scale_color_brewer(palette="Set2") +
+  xlab("Relative location") +
+  ylab("Mean centered surface measurements (in micron)")
+```
+
+]
+
+
+--
+
+For each location $x$ we set up the following model with $n = 12$ observations <br>( $12 =  2 \times 2 \times 3$ ):
+
+$$y_{ijk\ell} = \mu + b_{ij} + r_{ij(k)} + s_{ij{(k\ell)}}$$
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Modelling variability
+
+$$y_{ijk\ell} = \mu + b_{ij} + r_{ij(k)} + s_{ij{(k\ell)}}$$
+
+- $\mu$ is average surface measurement in location $x$, 
+- $b_{ij}$ is effect for bullet/land ( $i, j = 1, 2$ ), 
+- $r_{ij(k)}$ is round ( $k = 1, 2$ ) nested within bullet/land and,  
+- $s_{ij(k\ell)}$ are scan repeats within each round ( $\ell = 1, 2, 3$ )
+
+<h4>Results</h4>
+
+```{r}
+library(lme4)
+library(xtable)
+
+p.lme3 <- lmer(flat ~ -1 + (1 | barrelland/x/bullet/round), 
+              data = dframe)
+table <- data.frame(summary(p.lme3)$varcor)[,-(2:3)]
+
+names(table) <- c("Term", "Variance", "Std.Dev.")
+table$Source <- c( "staging","bullet","location", "land", "scan")
+table <- table[c(3, 2,4,1,5), c("Source", "Variance", "Std.Dev.")]
+tab <- xtable(table, digits = c(0,0,4,4))
+#print(tab, type="html", include.rownames=FALSE, html.table.attributes=list(border=0, style="font-family:arial"))
+```
+
+```{r}
+md_francesca <- read.csv("../data/francesca-modeldata.csv")
+
+p.lme3_f <- lmer(flat ~ -1 + (1 | barrelland/x/bullet/round), 
+              data = md_francesca)
+table_f <- data.frame(summary(p.lme3_f)$varcor)[,-(2:3)]
+
+names(table_f) <- c("Term", "Variance", "Std.Dev.")
+table_f$Source <- c( "staging","bullet","location", "land", "scan")
+table_f <- table_f[c(3, 2,4,1,5), c("Source", "Variance", "Std.Dev.")]
+tabf <- xtable(table_f, digits = c(0,0,5,5))
+#print(tabf, type="html", include.rownames=FALSE, html.table.attributes=list(border=0, style="font-family:arial"))
+```
+
+--
+.pull-left[
+Operator A
+<!-- html table generated in R 3.3.3 by xtable 1.8-2 package -->
+<!-- Fri Jul 21 20:46:01 2017 -->
+<table style="font-family:arial;" 0; border-spacing: 50px;>
+<tr> <th> Source </th> <th> Variance </th> <th> Std.Dev. </th>  </tr>
+  <tr> <td> location </td> <td align="right"> 2.6726 </td> <td align="right"> 1.6348 </td> </tr>
+  <tr> <td> bullet </td> <td align="right"> 0.3243 </td> <td align="right"> 0.5695 </td> </tr>
+  <tr> <td> land </td> <td align="right"> 0.0047 </td> <td align="right"> 0.0689 </td> </tr>
+  <tr> <td> staging </td> <td align="right"> 0.1529 </td> <td align="right"> 0.3910 </td> </tr>
+  <tr> <td> scan </td> <td align="right"> 0.0264 </td> <td align="right"> 0.1623 </td> </tr>
+   </table>
+]
+--
+.pull-right[
+Operator F
+<!-- html table generated in R 3.3.3 by xtable 1.8-2 package -->
+<!-- Sun Jul 23 18:13:35 2017 -->
+<table style="font-family:arial;" 0; border-spacing: 50px;>
+<tr> <th> Source </th> <th> Variance </th> <th> Std.Dev. </th>  </tr>
+  <tr> <td> location </td> <td align="right"> 4.9805 </td> <td align="right"> 2.2317 </td> </tr>
+  <tr> <td> bullet </td> <td align="right"> 0.2629 </td> <td align="right"> 0.5128 </td> </tr>
+  <tr> <td> land </td> <td align="right"> 0.0030 </td> <td align="right"> 0.0554 </td> </tr>
+  <tr> <td> staging </td> <td align="right"> 0.1713 </td> <td align="right"> 0.4138 </td> </tr>
+  <tr> <td> scan </td> <td align="right"> 0.0191 </td> <td align="right"> 0.1380 </td> </tr>
+   </table>
+]   
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Impact on  analysis
+
+- definition of peaks and valleys: match residual error of smooth to variability expected across bullets
+
+```{r}
+mda <- read.csv("../data/allison-modeldata.csv")
+
+res1 <- mda %>% filter(files == files[1], barrelland=="Land 1")
+
+fitloess <- function(data, span) {
+  l.75 <- loess(flat~y, data = data, span = span)
+  l75.fitted <- predict(l.75, newdata=data, se=TRUE)
+  data.frame(fit=l75.fitted$fit, 
+             x = data$y,
+             se = l75.fitted$se.fit)
+}
+
+l.01 <- loess(flat~y, data = res1, span = 0.01)
+l.02 <- loess(flat~y, data = res1, span = 0.02)
+l.03 <- loess(flat~y, data = res1, span = 0.03)
+l.05 <- loess(flat~y, data = res1, span = 0.05)
+l.06 <- loess(flat~y, data = res1, span = 0.06)
+l.10 <- loess(flat~y, data = res1, span = 0.1)
+
+set1 <- brewer.pal(3, name="Set1")
+p1 <- res1 %>% ggplot(aes(x = y, y = flat, colour=span)) + 
+  geom_point(colour="grey60") + theme_bw() +
+  xlab("Relative Location (in micron)") +
+  ylab("Signature (in micron)") +
+  scale_colour_manual("Span (residual error)", values=set1) +
+  theme(legend.position = "bottom")
+
+p2 <- p1 +
+  geom_line(aes(x=x, y = fit, colour="0.03 (0.30)"), data = fitloess(res1, span = 0.03)) 
+
+p3 <- p2 +
+  geom_line(aes(x=x, y = fit, colour="0.06 (0.52)"), data = fitloess(res1, span = 0.06)) 
+
+p4 <- p3 +
+  geom_line(aes(x=x, y = fit, colour="0.1  (0.74)"), data = fitloess(res1, span = 0.1)) 
+```
+
+
+```{r, fig.width = 8, fig.height = 5}
+p1 +theme_bw()
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Impact on  analysis
+
+- definition of peaks and valleys: match residual error of smooth to variability expected across bullets
+- smooth with span of 0.03 is too close to values (residual error of 0.30)
+
+```{r, fig.width = 8, fig.height = 5}
+p2
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Impact on  analysis
+
+- definition of peaks and valleys: match residual error of smooth to variability expected across bullets
+- smooth with span of 0.1 oversmooth, span of 0.06 seems best (blue line)
+
+```{r, fig.width = 8, fig.height = 5}
+p4
+```
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Impact on  analysis
+
+- zoom-in
+- span of 0.05 corresponds to about 90 micron Gaussian filter
+
+```{r, fig.width = 8, fig.height = 5}
+p4 + xlim(c(550, 850))
+```
+
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Conclusions/Future work
+
+- variability results likely machine dependent (Sensofar CLM) and dependent on machine settings: resolution of 0.645 microns/pixel, light, internal threshold
+- ammunition: Remington UMC 9mm Luger Full Metal Jackets
+- gun barrels: Ruger LCP
+- Thanks to Allison Mark and Francesca Spencer for providing the scans
+- Thanks, as always, to our advisors and collaborators at NIST!
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Other measures
+
+.pull-left[
+- besides correlation we can use other measures of similarity, e.g. matching scores
+- use RF score (Hare et al. 2017)
+]
+ 
+.pull-right[
+```{r, fig.width=8, fig.height=8}
+features <- read.csv("../data/features.csv")
+features <- features %>% 
+  filter(!(bullet1 == "Bullet 1" & round1 == "Round 2")) %>%
+  filter(!(bullet2 == "Bullet 1" & round2 == "Round 2")) 
+
+features  %>% 
+  ggplot(aes( x = scan1, y = scan2, fill=rfscore)) + geom_tile()+
+  facet_grid(bullet1+round1+land1~bullet2+round2+land2) +
+  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=0.5)) +
+  scale_fill_gradient2("RF score", midpoint=0.45) +
+  ggtitle("Scan-scan RF scores")
+```
+]
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Other measures
+
+.pull-left[
+- besides correlation we can use other measures of similarity, e.g. matching scores
+- use RF score (Hare et al. 2017)
+- this is what the previous matrix ideally looks like
+]
+ 
+.pull-right[
+```{r, fig.width=8, fig.height=8}
+features  %>% 
+  ggplot(aes( x = scan1, y = scan2, fill=factor(type))) + 
+  geom_tile(alpha = 0.8)+
+  facet_grid(bullet1+round1+land1~bullet2+round2+land2) +
+  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=0.5)) +
+  scale_fill_manual("Known match", values=c(muted("red"), muted("blue"))) +
+  ggtitle("Scan-scan known matches")
+```
+]
+
+
+
+```{r, eval=FALSE, fig.width = 6, fig.height = 5}
+features %>% ggplot(aes(x=rfscore, fill= type)) + geom_density(alpha=.5) + scale_fill_brewer("Known match", palette="Set1") + theme_bw() + 
+  facet_grid(type~.) + 
+  xlab("Random forest score")
+```
