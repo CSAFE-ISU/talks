@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bullet Matching under degradation</title>
+    <meta charset="utf-8">
+    <meta name="author" content="   Heike Hofmann (heike.hofmann@gmail.com, @heike_hh)   Eric Hare, Alicia Carriquiry" />
+    <link href="index_files/remark-css-0.0.1/example.css" rel="stylesheet" />
+    <script src="index_files/htmlwidgets-0.9/htmlwidgets.js"></script>
+    <script src="index_files/jquery-1.12.4/jquery.min.js"></script>
+    <script src="index_files/datatables-binding-0.2/datatables.js"></script>
+    <link href="index_files/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="index_files/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="index_files/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="myremark.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Bullet Matching under degradation
+## ICFIS 2017 - Minneapolis
+### <br><br> Heike Hofmann (<a href="mailto:heike.hofmann@gmail.com">heike.hofmann@gmail.com</a>, <span class="citation">@heike_hh</span>) <br> Eric Hare, Alicia Carriquiry
+### Sep 2017
+
+---
+
+
+
+
+
+
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Outline 
+
+
+- Algorithm and Validation Results
+- Degradation: Simulation study
+- Conclusion/Further Work
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+
+
+
+# Same source matching of bullet lands
+
+- classial ML problem: 
+  - data are 3d topographic scans of land engraved areas (LEAs)
+  - feature extraction based on pairs of lands: correlations (for different bandwidths), Euclidean distance, depth of matching striae, ...   
+  - algorithm (random forest) trained on situation with known ground truth
+- published in: &lt;small&gt;[Hare, Hofmann, Carriquiry, *Automatic matching of bullet land impressions*, Annals of Applied Statistics](https://www.e-publications.org/ims/submission/AOAS/user/submissionFile/30098?confirm=037051c6)&lt;/small&gt;
+
+&lt;img src="figures/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Bullet-bullet matching
+
+- *Sequence Average Maximum* (SAM, Sensofar 2017) used for bullet-bullet summaries 
+`\(SAM = \max_{k = 0,..., 5} SA(R, k)\)`, where `\(R\)` is matrix of land-land scores for two bullets 
+- For square matrix `\(A = (a)_{1 \le i,j \le p}\)` we define the `\(k\)`th sequence average `\(SA(A, k)\)` for `\(k = 0, ... p-1\)` as 
+`$$SA(A, k) = \frac{1}{p} \sum_{i=1}^{p} a_{i,i \oplus k}, \text{ where } i\oplus k := (i + k)\mod p.$$` 
+
+
+&lt;img src="figures/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Results for Hamby set 252
+
+- questioned bullets on y-axis, known bullets and barrels on x-axis
+- obviously closed set study
+- type I and type II error rates: 0.000
+
+&lt;img src="figures/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Potential Limitations of the algorithm
+
+- limited data available for training 
+  - [NIST ballistics database](https://tsapps.nist.gov/NRBTD) (Alan Zheng) has publicly accessible data ...
+  - ... but so far covers only 11 barrels (10 barrels from Hamby, 1 barrel from Cary study)
+- lots of potential sources of variability/error:
+  - 3d scans: machine, operator, staging, ... ?
+  - effect on algorithm: barrel manufacturer, rifling, ...?
+
+Need validation tests!
+
+
+
+---
+class: inverse, center, middle
+
+# Validation of the Algorithm
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+
+
+
+# Validation sets
+
+- Collaborations with several crime labs: &lt;br&gt;
+Phoenix PD, Houston FSI, Denver PD, LA PD
+- Phoenix PD: open set study 
+  - three test fires (B1, B2, B3) from eight different barrels (A9, C8, F6, L5, M2, P7, R3, U10)
+  - ten unknown bullets (B, E, H, J, K N, Q, T, Y, Z)
+
+--
+&lt;img src="figures/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Validation sets (cont'd)
+
+- Results from Phoenix study: 
+  - still perfect results!
+  - 3d scans: different instrument, operator
+  - bullets: different barrel (i.e. not Hamby or Cary) but still 9 mm Ruger (i.e. traditional rifling)
+- Results from other studies still pending but will inform effects of:
+  - different manufacturers (Beretta, Glock), rifling process (Ruger LCP), ammunition (polymer coating)
+
+---
+class: inverse, center, middle
+
+# How much of a bullet do we need? - Degraded Bullets 
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Simulation Study
+
+Use Hamby 252 and Hamby 44 to extract land-land features under degradation: 
+
+1. Three *types* of degradation:
+    1. **Left Fixed** - left part of the land (leading shoulder) is recoverable.
+    2. **Middle Fixed** - middle part of the land is recoverable.
+    3. **Right Fixed** - right part of the land (trailing shoulder) is recoverable.&lt;br&gt;
+2. Six *degradation levels*: 
+    1. 100% (Fully recovered) 
+    2. 87.5% Recovered, 
+    3. 75% Recovered, 
+    4. 62.5% Recovered, 
+    5. 50% Recovered, 
+    6. 37.5% Recovered,  
+    7. 25% Recovered.
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Simulation Results
+
+- Sensitivity: correctly identify a known match (of a *pair of lands*)
+- Specificity: correctly identify a known non-match (of a *pair of lands*)
+
+&lt;img src="images/senspe-1.png" width="650"&gt;
+
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Closer look: behavior of features under degradation (known matches)
+
+- All features are normalized to mm (to allow comparisons across different lengths of evidence)
+- Normalization leads to sometimes strange side effects
+- Smaller length pieces are easier to align - leads to sometimes strange behaviour
+
+&lt;img src="images/featexp-1.png" width="750"&gt;
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Testing this Finding
+
+Extract a 50% degraded signature from a Hamby bullet land with bad tank rash in one half. (Barrel 9 Bullet 2 Land 4):
+
+&lt;img src="images/br924.png" width="650"&gt;
+
+--
+
+<div id="htmlwidget-56094bedd57611d1bba5" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-56094bedd57611d1bba5">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9"],["RF score","Correlation","Rough Correlation","D","Matches","Mismatches","CMS","CNMS","S"],[0.0167,0.444,0.1728,0.0023,5.6275,5.5784,4.6043,3.0428,6.3148],[0.5167,0.6002,0.3728,0.0018,10.24,7.5889,9.216,6.5771,12.0212]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Variable<\/th>\n      <th>Full Land<\/th>\n      <th>Left Side<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":2,"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[2,10,25,50,100]},"selection":{"mode":"multiple","selected":null,"target":"row"}},"evals":[],"jsHooks":[]}</script>
+
+---
+background-image: url(images/csafe-logo-90.png)
+background-size: 150px
+background-position: 97% 3%
+
+# Conclusion/Further Work
+
+
+- Further contributions to trifecta of openness (https://github.com/CSAFE-ISU):  
+    - open algorithms, 
+    - open data,
+    - open results
+- Our lab is working overtime to accommodate collaboration requests ... more results to come soon :)    
+- In process of collecting data on persistence study with loca Sheriff's office
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});
+(function() {var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler"); if (!r) return; s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }"; d.head.appendChild(s);})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
