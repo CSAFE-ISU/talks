@@ -6,3 +6,4 @@ June 8 2017: [Statistical and and Algorithmic Approaches to Matching Bullets (5 
 July 25 2017: [Sources of Variability in Surface Measurements](https://csafe-isu.github.io/talks/NIST-error/#1), NIST Error Management Workshop<br>
 Sep 6 2017: [Matching bullet lands under degrading](https://csafe-isu.github.io/talks/ICFIS%202017/#1), ICFIS 2017, Minneapolis<br>
 Sep 6 2017: [x3p-viewer](https://csafe-isu.github.io/talks/ICFIS%202017%20x3p-viewer/x3pslides.html), ICFIS 2017, Minneapolis<br>
+Oct 19 2017: Alicia Carriquiry: [Statistics and the Fair Administration of Justice](https://csafe-isu.github.io/talks/WSDS/CWSDS-CarriquiryPresentation.pdf), WSDS 2017, San Diego<br>
