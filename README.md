@@ -1,5 +1,6 @@
 # Talks
 
+Oct 27 2017: [Toward an objective algorithm to compare bullets and cartridge cases](https://csafe-isu.github.io/talks/LegalAid2017/LegAid-CarriquiryPresentation.pdf), Alicia Carriquiry, , New York<br>
 Oct 19 2017: [Statistics and the Fair Administration of Justice](https://csafe-isu.github.io/talks/WSDS%202017/CWSDS-CarriquiryPresentation.pdf), Alicia Carriquiry, WSDS 2017, San Diego<br>
 Sep 6 2017: [Matching bullet lands under degrading](https://csafe-isu.github.io/talks/ICFIS%202017/#1), ICFIS 2017, Minneapolis<br>
 Sep 6 2017: [x3p-viewer](https://csafe-isu.github.io/talks/ICFIS%202017%20x3p-viewer/x3pslides.html), ICFIS 2017, Minneapolis<br>
