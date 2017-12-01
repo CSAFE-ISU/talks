@@ -1,0 +1,71 @@
+---
+title: "Automatic groove identification in 3D bullet land scans"
+author: "Kiegan Rice"
+date: "12/1/2017"
+output: 
+  pdf_document:
+    fig_caption: true
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Following the 2016 PCAST report on the validity of feature-comparison methods in forensic science, research focus has shifted towards automated comparisons of bullet marks. One avenue for automated comparisons is based on high-resolution 3D scans of bullet lands. 
+Statistical learning techniques are used to compare scans and quantify the strength and quality of matches between bullets.
+In order to fully automate the quantification process an algorithm has to be able to automatically detect the location of the edges of the lands (grooves). Incorrect identification of groove locations is shown to lead to misidentification of key characteristics during the automated process leading to a significant increase in overall error rates down stream in the algorithm. Groove location is an inherently inverse problem, current solutions [@aoas] are susceptible to numeric instabilities. We are proposing an approach based on robust linear models to provide solutions that are more reliable and therefore lend themselves better to automation without the need for human intervention. 
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=.9\textwidth]{abstract_files/figure-latex/figure-1.pdf}
+\includegraphics[width=.9\textwidth]{abstract_files/figure-latex/figure-2.pdf}
+\caption{\label{fig1}Groove identification in crosscuts of two bullet lands. The vertical blue lines indicate locations of the left and right groove. At the top, the groove identifaction works well, the bottom proves more challenging.}
+\end{figure}
+
+```{r figure, eval=FALSE, cache=TRUE, fig.align="center", echo=FALSE, message=FALSE,warning=FALSE, fig.height = 2, fig.cap="Groove identification in crosscuts of two bullet lands. The vertical blue lines indicate locations of the left and right groove as found by @aoas, green lines are showing locations using the robust approach. At the top, the groove identifaction works well, the bottom proves more challenging.", out.width='.9\\textwidth'}
+## ----echo=FALSE, message=FALSE,warning=FALSE-----------------------------
+library(bulletr)
+library(ggplot2)
+library(knitr)
+
+## ---- eval=FALSE---------------------------------------------------------
+## plot3D.x3p.file(read_x3p("/Users/heike/papers/dissertations/eric-dissertation/images/Hamby (2009) Barrel/bullets/Br1 Bullet 1-5.x3p"),
+##                 plot.type = "surface")
+
+## ---- warning=FALSE, fig.height=4----------------------------------------
+br111 <- get_crosscut("/Users/heike/papers/dissertations/eric-dissertation/images/Hamby (2009) Barrel/bullets/Br1 Bullet 1-5.x3p", x = 243.75)
+
+
+## ---- message=FALSE, warning=FALSE, fig.height=4-------------------------
+br111.groove2 <- get_grooves(br111, method="quadratic")
+
+br111.groove <- get_grooves(br111)
+br111.groove$plot +
+  ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme_bw() +
+  geom_vline(xintercept=br111.groove2$groove[1], colour="darkgreen") +
+  geom_vline(xintercept=br111.groove2$groove[2], colour="darkgreen")
+
+
+
+## ---- message=FALSE, warning=FALSE, fig.height=4-------------------------
+
+br116 <- read_dat("/Volumes/Big Red/CSAFE/Houston Set Rescan/Group 1/KA/Bullet 1/HTX - Group 1 - Kit CU - KA Bullet 1 Land 1 - Sneox1 - 20x - auto light left image +20 perc. - threshold 2 - resolution 4 - Allison Mark.dat", profiley=FALSE)
+
+result2 <- get_grooves(get_crosscut(bullet=br116, x = 50))
+br116.groove2 <- get_grooves(get_crosscut(bullet=br116, x = 50), method="quadratic")
+
+result2$plot +
+    ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme_bw() +
+  geom_vline(xintercept=br116.groove2$groove[1], colour="darkgreen") +
+  geom_vline(xintercept=br116.groove2$groove[2], colour="darkgreen")
+
+
+
+```
+
+## References
