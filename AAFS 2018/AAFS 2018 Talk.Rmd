@@ -87,15 +87,16 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 - We will look at all the residuals in the areas between our predicted grooves and the manually identified grooves  
+- For each land in the data set (208 total), sum up these residuals  
 
-<img src="images/assess-fit-plot.png" width=600 height=400>
+<img src="images/assess-fit-plot.png" width=550 height=300>
 
 
 ## Results  
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
-- To assess each method, we can take the mean of these residuals for each method over the whole dataset  
-- 208 total lands  
+- The sums shown previously are calculated for each land and each method 
+- Then, we compare the mean across the whole dataset for the different methods.  
 
 
 ```{r, echo = F, warning = F, message = F}
