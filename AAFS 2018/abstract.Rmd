@@ -1,7 +1,6 @@
 ---
 title: "Automatic groove identification in 3D bullet land scans"
 author: "Kiegan Rice"
-date: "12/1/2017"
 output: 
   pdf_document:
     fig_caption: true
@@ -14,13 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Following the 2016 PCAST report on the validity of feature-comparison methods in forensic science, research focus has shifted towards automated comparisons of bullet marks. One avenue for automated comparisons is based on high-resolution 3D scans of bullet lands. 
 Statistical learning techniques are used to compare scans and quantify the strength and quality of matches between bullets.
-In order to fully automate the quantification process an algorithm has to be able to automatically detect the location of the edges of the lands (grooves). Incorrect identification of groove locations is shown to lead to misidentification of key characteristics during the automated process leading to a significant increase in overall error rates down stream in the algorithm. Groove location is an inherently inverse problem, meaning current solutions [@aoas] are susceptible to numeric instabilities. We are proposing an approach based on robust linear models to provide solutions that are more reliable and therefore lend themselves better to automation without the need for human intervention. As seen in Figure 1, this approach shows promise in identifying groove locations more accurately when dealing with complicated bullet lands.
+In order to fully automate the quantification process an algorithm has to be able to automatically detect the location of the edges of the lands (grooves). Incorrect identification of groove locations is shown to lead to misidentification of key characteristics during the automated process. This leads to a significant increase in overall error rates down stream in the algorithm. Groove location is an inherently inverse statistical problem, meaning that what would typically be considered the end result, the relative heights of the bullet land, is needed to determine a constant piece of the land's structure, the groove locations. Current solutions that do not address this issue [@aoas] are susceptible to numeric instabilities. We are proposing an approach based on robust linear models to provide solutions that are more reliable and therefore lend themselves better to automation without the need for human intervention. Figure 1 demonstrates the results of automated groove location detection for both a straightforward example and one that is more complex. While the current and proposed solutions both easily identify grooves in the simple case, the proposed method outperforms the current solution in the more challenging scenario.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=.8\textwidth]{abstract_files/figure-latex/figure-1.pdf}
 \includegraphics[width=.8\textwidth]{abstract_files/figure-latex/figure-2.pdf}
-\caption{\label{fig1}Groove identification in crosscuts of two bullet lands. The vertical blue lines indicate locations of the left and right groove as identified by current solutions. The vertical green lines indicate the locations as identified by our proposed solution. At the top, the groove identification works well using both methods; the bottom proves more challenging.}
+\caption{\label{fig1}Groove identification in crosscuts of two bullet lands. The vertical blue lines indicate locations of the left and right groove as identified by current solutions. The vertical green lines indicate the locations as identified by our proposed solution. At the top, these methods are nearly indistinguishable. The land on the bottom demonstrates where current methods fail and the proposed method more accurately identifies the true land locations.}
 \end{figure}
 
 ```{r figure, eval=FALSE, cache=TRUE, fig.align="center", echo=FALSE, message=FALSE,warning=FALSE, fig.height = 2, fig.cap="Groove identification in crosscuts of two bullet lands. The vertical blue lines indicate locations of the left and right groove as found by @aoas, green lines are showing locations using the robust approach. At the top, the groove identifaction works well, the bottom proves more challenging.", out.width='.9\\textwidth'}
