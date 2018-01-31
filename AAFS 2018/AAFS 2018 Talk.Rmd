@@ -12,7 +12,7 @@ output:
 ```{r,echo=FALSE, message=FALSE,warning=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
 
-library(devtools)
+#library(devtools)
 #devtools::install_github("CSAFE-ISU/bulletr")
 library(bulletr)
 library(ggplot2)
@@ -87,6 +87,13 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 - We will look at all the residuals in the areas between our predicted grooves and the manually identified grooves  
+
+<img src="images/assess-fit-plot.png" width=600 height=400>
+
+
+## Results  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
 - To assess each method, we can take the mean of these residuals for each method over the whole dataset  
 - 208 total lands  
 
