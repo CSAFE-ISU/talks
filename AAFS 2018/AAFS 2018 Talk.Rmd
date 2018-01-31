@@ -1,0 +1,106 @@
+---
+title: "Automatic groove identification in 3D bullet land scans"
+author: "Kiegan Rice"
+date: "February 21, 2018"
+output: 
+    rmdshower::shower_presentation:
+      katex: true
+      ratio: 4x3
+---
+
+
+```{r,echo=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+library(bulletr)
+library(ggplot2)
+library(knitr)
+```
+
+## Automatic groove identification <br> in 3D bullet land scans { .white }
+
+<br><br><br><br><br><br><br>
+<img src="images/bullet_comparison_2.jpg" class="cover">
+<p class="white">
+Kiegan Rice <br />
+Iowa State University<br />
+February 21st, 2018
+</p> 
+
+
+## Background: Bullet Lands
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- When a gun is fired, the bullet is propelled forward through the barrel.  
+- As the bullet travels down the barrel, it makes contact with parts of the barrel.  
+- This is how we get striations!  
+- We get two different types of areas on the bullet: the lands and the grooves.  
+
+<img src="images/bullet.jpg" width = 300 height = 200>  
+
+
+## Background: Collection of Land Data  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- Sensofar 3D Scanning Microscope  
+- A scan of one bullet (6 individual lands) takes ~1 hour  
+
+```{r, echo = F, warning = F, message = F}
+bulletr::plot_3d_land(bullet = br411, sample = 2)
+```
+
+## Importance of Groove Removal  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- Bullet matching algorithm  
+- Removing the underlying curved structure of land 
+- Looking at remaining residuals 
+    - Deviations from the natural curve of the land  
+    
+<img src="images/fit-and-resid.png" width=700 height=300>
+
+
+## Shortcomings of Current Methods
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+
+<img src="images/rollapply-mis-id.png" width=600 height=400>
+
+## Robust Linear Models  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+<img src="images/fits-and-resids.png" width=700 height=450>  
+
+
+## Groove Identification Process  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- Once we have the residuals, how do we decide where the cutoffs should be?  
+<img src="images/groove-id-plot.png" width = 600 height = 400>
+
+
+
+
+## Results  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- We will look at all the residuals in the areas between our predicted grooves and the manually identified grooves  
+- To assess each method, we can take the mean of these residuals for each method over the whole dataset  
+- 208 total lands  
+
+
+```{r, echo = F, warning = F, message = F}
+result_table <- cbind(c(223.189, 239.6362), c(589.063, 229.614))
+dimnames(result_table) <- list(c("Rollapply", "Quadratic"), c("Left Groove", "Right Groove"))
+as.table(result_table)
+```
+
+
+
+## Acknowledgments  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- All work was sponsored by CSAFE (Center for Statistics and Applications in Forensic Evidence), a NIST Center of Excellence  
+
+
+
+
