@@ -33,19 +33,27 @@ February 21st, 2018
 ## Background: Bullet Lands
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
-- When a gun is fired, the bullet is propelled forward through the barrel.  
-- As the bullet travels down the barrel, it makes contact with parts of the barrel.  
+- When a gun is fired, the bullet is propelled forward through the barrel  
+- As it travels down the barrel, it makes contact with parts of the barrel  
 - This is how we get striations!  
-- We get two different types of areas on the bullet: the lands and the grooves.  
+- We get two different types of areas on the bullet: the lands and the grooves  
 
-<img src="images/bullet.jpg" width = 300 height = 200>  
+<img src="images/barrel.png" width = 250 height = 300> &nbsp;
+ <img src="images/bullet.jpg" width = 300 height = 200> 
 
 
 ## Background: Collection of Land Data  
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 - Sensofar 3D Scanning Microscope  
+- Hamby set 44 - 35 bullets from 10 consecutively rifled Ruger barrels
+    - Rescanned with CSAFE's microscope  
+    - To use as 'base' set; methods to be tested on several other data sets
 - A scan of one bullet (6 individual lands) takes ~1 hour  
+
+
+## Background: Land Data  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 ```{r, echo = F, warning = F, message = F}
 bulletr::plot_3d_land(bullet = br411, sample = 2)
@@ -60,6 +68,11 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
     - Deviations from the natural curve of the land  
     
 <img src="images/fit-and-resid.png" width=700 height=300>
+
+## Importance of Groove Removal  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- Write some things bragging about the algorithm here!  
 
 
 ## Shortcomings of Current Methods
