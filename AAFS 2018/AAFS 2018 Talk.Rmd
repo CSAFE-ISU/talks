@@ -72,7 +72,7 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 ## Importance of Groove Removal  
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
-- Write some things bragging about the algorithm here!  
+- Add additional details about the algorithm here  
 
 
 ## Shortcomings of Current Methods
