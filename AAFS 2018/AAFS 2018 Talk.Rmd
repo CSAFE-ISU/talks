@@ -113,6 +113,14 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 
 <img src="images/assess-fit-plot.png" width=550 height=300>
 
+## Results  
+<img src="images/background-logo.png" class="cover" width=1200 height=800>
+
+- The sums shown previously are calculated for each land and each method 
+- Then, we compare the distributions of those values
+
+<img src="images/zoomed_boxplot_comparisons.png" width = 550 height = 300>
+
 
 ## Results  
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
@@ -120,7 +128,7 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 - The sums shown previously are calculated for each land and each method 
 - Then, we compare the distributions of those values
 
-<img src="images/comparison_boxplots.png" width = 550 height = 300>
+<img src="images/boxplot-comparisons.png" width = 550 height = 300>
 
 ```{r, echo = F, warning = F, message = F, results = 'hide'}
 result_table <- cbind(c(223.189, 239.6362), c(589.063, 229.614))
