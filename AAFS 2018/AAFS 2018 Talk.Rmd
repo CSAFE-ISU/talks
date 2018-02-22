@@ -35,8 +35,8 @@ February 21st, 2018
 
 - When a gun is fired, the bullet is propelled forward through the barrel  
 - As it travels down the barrel, it makes contact with parts of the barrel  
-- This is how we get striations!  
-- We get two different types of areas on the bullet: the lands and the grooves  
+- Striations result from this contact   
+- Striations are observed on *lands*. Lands are separated by *grooves*.  
 
 <img src="images/barrel.png" width = 250 height = 300> &nbsp;
  <img src="images/bullet.jpg" width = 300 height = 200> 
@@ -49,12 +49,13 @@ February 21st, 2018
 - Hamby set 44 - 35 bullets from 10 consecutively rifled Ruger barrels
     - Rescanned with CSAFE's microscope  
     - To use as 'base' set; methods to be tested on several other data sets
+    - Have manual groove identifications for this whole set  
     - Each pixel: .645 square microns
-    - Each land is 2mm, 2000 microns
+    - Each land is 2mm (2000 microns) wide
 - A scan of one bullet (6 individual lands) takes ~1 hour  
 
 
-## Background: Land Data  
+## Background: Land Surface  
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 ```{r, echo = F, warning = F, message = F}
@@ -80,9 +81,7 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
     - Polygonal rifling and coated bullets 
         - Error rate is higher  
     - **Biggest error source: misidentification of groove locations**  
-- Additional Limitations 
-    - trained on Hamby data (works best on Ruger P85)
-    - need to adjust for different brands, makes, and calibers  
+
 
 ## Shortcomings of Current Methods
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
@@ -105,7 +104,7 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 
 
 
-## Results  
+## Comparing two automated approaches 
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 - We will look at all the residuals in the areas between our predicted grooves and the manually identified grooves  
@@ -113,28 +112,15 @@ bulletr::plot_3d_land(bullet = br411, sample = 2)
 
 <img src="images/assess-fit-plot.png" width=550 height=300>
 
-## Results  
+## Comparing two automated approaches   
 <img src="images/background-logo.png" class="cover" width=1200 height=800>
 
 - The sums shown previously are calculated for each land and each method 
 - Then, we compare the distributions of those values
 
-<img src="images/zoomed_boxplot_comparisons.png" width = 550 height = 300>
+<img src="images/zoomed_boxplot_comparisons.png" width = 400 height = 300> &nbsp;
+<img src="images/boxplot-comparisons.png" width = 400 height = 300>
 
-
-## Results  
-<img src="images/background-logo.png" class="cover" width=1200 height=800>
-
-- The sums shown previously are calculated for each land and each method 
-- Then, we compare the distributions of those values
-
-<img src="images/boxplot-comparisons.png" width = 550 height = 300>
-
-```{r, echo = F, warning = F, message = F, results = 'hide'}
-result_table <- cbind(c(223.189, 239.6362), c(589.063, 229.614))
-dimnames(result_table) <- list(c("Rollapply", "Quadratic"), c("Left Groove", "Right Groove"))
-as.table(result_table)
-```
 
 
 ## Impact for Forensic Analysts
