@@ -1,5 +1,5 @@
 # Talks
-Jul 31 2018: [A Bayesian Approach of Forensic Handwriting Evidence](https://csafe-isu.github.io/talks/Crawford_JSM.html), Amy Crawford, JSM 2018, Vancouver. <br>
+Jul 31 2018: [A Bayesian Approach of Forensic Handwriting Evidence](https://csafe-isu.github.io/talks/Crawford_JSM2018.html), Amy Crawford, JSM 2018, Vancouver. <br>
 Feb 22 2018: [Automatic groove identification in 3D bullet land scans](https://csafe-isu.github.io/talks/AAFS%202018/AAFS_2018_Talk.html), Kiegan Rice, AAFS 2018, Seattle. <br>
 Oct 27 2017: [Toward an objective algorithm to compare bullets and cartridge cases](https://csafe-isu.github.io/talks/LegalAid2017/LegAid-CarriquiryPresentation.pdf), Alicia Carriquiry, , New York<br>
 Oct 19 2017: [Statistics and the Fair Administration of Justice](https://csafe-isu.github.io/talks/WSDS%202017/CWSDS-CarriquiryPresentation.pdf), Alicia Carriquiry, WSDS 2017, San Diego<br>
