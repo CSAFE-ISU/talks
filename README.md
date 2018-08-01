@@ -1,4 +1,5 @@
 # Talks
+Aug 02 2018: [Methods for Automatic Groove Identification in 3D Bullet Land Scans](https://csafe-isu.github.io/talks/Rice_JSM2018.html), Kiegan Rice, JSM 2018, Vancouver. <br>
 Jul 31 2018: [A Bayesian Approach of Forensic Handwriting Evidence](https://csafe-isu.github.io/talks/Crawford_JSM2018.html), Amy Crawford, JSM 2018, Vancouver. <br>
 Feb 22 2018: [Automatic groove identification in 3D bullet land scans](https://csafe-isu.github.io/talks/AAFS%202018/AAFS_2018_Talk.html), Kiegan Rice, AAFS 2018, Seattle. <br>
 Oct 27 2017: [Toward an objective algorithm to compare bullets and cartridge cases](https://csafe-isu.github.io/talks/LegalAid2017/LegAid-CarriquiryPresentation.pdf), Alicia Carriquiry, , New York<br>
